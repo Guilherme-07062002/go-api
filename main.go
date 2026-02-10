@@ -2,19 +2,13 @@ package main
 
 import (
 	"fmt"
+	album "go-api/domain"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type album struct {
-	ID     string   `json:"id"`
-	Title  *string  `json:"title"`
-	Artist *string  `json:"artist"`
-	Price  *float64 `json:"price"`
-}
-
-var albums = []album{
+var albums = []album.Album{
 	{ID: "1", Title: &[]string{"Blue Train"}[0], Artist: &[]string{"John Coltrane"}[0], Price: &[]float64{56.99}[0]},
 	{ID: "2", Title: &[]string{"Jeru"}[0], Artist: &[]string{"Gerry Mulligan"}[0], Price: &[]float64{17.99}[0]},
 	{ID: "3", Title: &[]string{"Sarah Vaughan and Clifford Brown"}[0], Artist: &[]string{"Sarah Vaughan"}[0], Price: &[]float64{39.99}[0]},
@@ -35,7 +29,7 @@ func getAlbums(c *gin.Context) {
 }
 
 func postAlbums(c *gin.Context) {
-	var newAlbum album
+	var newAlbum album.Album
 	newId := fmt.Sprint(len(albums) + 1)
 
 	if err := c.BindJSON(&newAlbum); err != nil {
@@ -64,7 +58,7 @@ func updateAlbum(c *gin.Context) {
 
 	for i, a := range albums {
 		if a.ID == id {
-			var updatedAlbum album
+			var updatedAlbum album.Album
 			if err := c.BindJSON(&updatedAlbum); err != nil {
 				c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return

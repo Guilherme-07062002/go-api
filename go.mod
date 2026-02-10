@@ -1,4 +1,4 @@
-module example/go-api
+module go-api
 
 go 1.24.4
 
