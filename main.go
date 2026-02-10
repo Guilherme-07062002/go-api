@@ -8,16 +8,16 @@ import (
 )
 
 type album struct {
-	ID     string  `json:"id"`
-	Title  string  `json:"title"`
-	Artist string  `json:"artist"`
-	Price  float64 `json:"price"`
+	ID     string   `json:"id"`
+	Title  *string  `json:"title"`
+	Artist *string  `json:"artist"`
+	Price  *float64 `json:"price"`
 }
 
 var albums = []album{
-	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+	{ID: "1", Title: &[]string{"Blue Train"}[0], Artist: &[]string{"John Coltrane"}[0], Price: &[]float64{56.99}[0]},
+	{ID: "2", Title: &[]string{"Jeru"}[0], Artist: &[]string{"Gerry Mulligan"}[0], Price: &[]float64{17.99}[0]},
+	{ID: "3", Title: &[]string{"Sarah Vaughan and Clifford Brown"}[0], Artist: &[]string{"Sarah Vaughan"}[0], Price: &[]float64{39.99}[0]},
 }
 
 func main() {
@@ -69,9 +69,15 @@ func updateAlbum(c *gin.Context) {
 				c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
-			albums[i].Title = updatedAlbum.Title
-			albums[i].Artist = updatedAlbum.Artist
-			albums[i].Price = updatedAlbum.Price
+			if updatedAlbum.Title != nil {
+				albums[i].Title = updatedAlbum.Title
+			}
+			if updatedAlbum.Artist != nil {
+				albums[i].Artist = updatedAlbum.Artist
+			}
+			if updatedAlbum.Price != nil {
+				albums[i].Price = updatedAlbum.Price
+			}
 			c.IndentedJSON(http.StatusOK, albums[i])
 			return
 		}
