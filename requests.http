@@ -11,3 +11,7 @@ Content-Type: application/json
     "artist": "Betty Carter",
     "price": 49.99
 }
+
+###
+# Get Album by ID
+GET http://localhost:8080/albums/1
