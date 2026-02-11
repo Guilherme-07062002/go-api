@@ -20,7 +20,9 @@ func main() {
 	getAllAlbumController := factories.GetAllAlbumFactory()
 	router.GET("/albums", getAllAlbumController.Handle)
 
-	router.GET("/albums/:id", getAlbumBydID)
+	getAlbumByIdController := factories.GetAlbumByIdFactory()
+	router.GET("/albums/:id", getAlbumByIdController.Handle)
+
 	router.POST("/albums", postAlbums)
 	router.PUT("/albums/:id", updateAlbum)
 
@@ -38,18 +40,6 @@ func postAlbums(c *gin.Context) {
 	newAlbum.ID = newId
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusCreated, newAlbum)
-}
-
-func getAlbumBydID(c *gin.Context) {
-	id := c.Param("id")
-
-	for _, a := range albums {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
 
 func updateAlbum(c *gin.Context) {
