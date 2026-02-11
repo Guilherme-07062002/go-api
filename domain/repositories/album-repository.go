@@ -1,8 +1,8 @@
 package repositories
 
-import album "go-api/domain/entities"
+import entities "go-api/domain/entities"
 
 type AlbumRepository interface {
-	GetByID(id string) (album.Album, error)
-	GetAll() ([]album.Album, error)
+	GetByID(id string) (entities.Album, error)
+	GetAll() ([]entities.Album, error)
 }
