@@ -3,10 +3,8 @@ package main
 import (
 	"fmt"
 	album "go-api/domain/entities"
+	factories "go-api/infra/factories"
 	"net/http"
-
-	memdb "go-api/infra"
-	usecases "go-api/usecases"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,23 +17,14 @@ var albums = []album.Album{
 
 func main() {
 	router := gin.Default()
+	getAllAlbumController := factories.GetAllAlbumFactory()
+	router.GET("/albums", getAllAlbumController.Handle)
+
 	router.GET("/albums/:id", getAlbumBydID)
-	router.GET("/albums", getAlbums)
 	router.POST("/albums", postAlbums)
 	router.PUT("/albums/:id", updateAlbum)
 
 	router.Run("localhost:8080")
-}
-
-func getAlbums(c *gin.Context) {
-	repo := memdb.NewAlbumRepository()
-	getAlbumsUsecase := usecases.NewGetAlbumsUsecase(repo)
-	albums, err := getAlbumsUsecase.Execute()
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
-		return
-	}
-	c.IndentedJSON(http.StatusOK, albums)
 }
 
 func postAlbums(c *gin.Context) {

@@ -1,15 +1,15 @@
-package usecase
+package usecases
 
 import (
 	entities "go-api/domain/entities"
-	repository "go-api/domain/repositories"
+	repositories "go-api/domain/repositories"
 )
 
 type GetAlbumsUsecase struct {
-	Repo repository.AlbumRepository
+	Repo repositories.AlbumRepository
 }
 
-func NewGetAlbumsUsecase(repo repository.AlbumRepository) *GetAlbumsUsecase {
+func NewGetAlbumsUsecase(repo repositories.AlbumRepository) *GetAlbumsUsecase {
 	return &GetAlbumsUsecase{
 		Repo: repo,
 	}
