@@ -2,12 +2,11 @@ package factories
 
 import (
 	"go-api/controllers"
-	inmemorydb "go-api/infra/repositories"
+	"go-api/domain/repositories"
 	"go-api/usecases"
 )
 
-func GetAllAlbumFactory() *controllers.GetAllAlbumsController {
-	repo := inmemorydb.NewAlbumRepository()
+func GetAllAlbumFactory(repo repositories.AlbumRepository) *controllers.GetAllAlbumsController {
 	usecase := usecases.NewGetAlbumsUsecase(repo)
 	controller := controllers.NewGetAllAlbumsController(usecase)
 	return controller

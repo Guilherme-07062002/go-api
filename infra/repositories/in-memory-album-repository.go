@@ -11,15 +11,9 @@ type AlbumRepositoryMemory struct {
 	albums []entities.Album
 }
 
-var AlbumsInMemory = []entities.Album{
-	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
-}
-
-func NewAlbumRepository() *AlbumRepositoryMemory {
+func NewAlbumRepository(albums []entities.Album) *AlbumRepositoryMemory {
 	return &AlbumRepositoryMemory{
-		albums: AlbumsInMemory,
+		albums: albums,
 	}
 }
 
@@ -38,12 +32,12 @@ func (r *AlbumRepositoryMemory) GetByID(id string) (entities.Album, error) {
 
 func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album {
 	var newAlbum entities.Album
-	newId := fmt.Sprint(len(AlbumsInMemory) + 1)
+	newId := fmt.Sprint(len(r.albums) + 1)
 	newAlbum.ID = newId
 	newAlbum.Title = album.Title
 	newAlbum.Artist = album.Artist
 	newAlbum.Price = album.Price
 
-	AlbumsInMemory = append(AlbumsInMemory, newAlbum)
+	r.albums = append(r.albums, newAlbum)
 	return newAlbum
 }
