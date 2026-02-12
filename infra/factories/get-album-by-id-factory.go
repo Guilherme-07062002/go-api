@@ -2,7 +2,7 @@ package factories
 
 import (
 	"go-api/controllers"
-	inmemorydb "go-api/infra"
+	inmemorydb "go-api/infra/repositories"
 	"go-api/usecases"
 )
 

@@ -15,6 +15,6 @@ func NewGetAlbumsUsecase(repo repositories.AlbumRepository) *GetAlbumsUsecase {
 	}
 }
 
-func (uc *GetAlbumsUsecase) Execute() ([]entities.Album, error) {
+func (uc *GetAlbumsUsecase) Execute() (*[]entities.Album, error) {
 	return uc.Repo.GetAll()
 }

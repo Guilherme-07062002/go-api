@@ -6,9 +6,9 @@ import (
 	"go-api/usecases"
 )
 
-func GetAllAlbumFactory() *controllers.GetAllAlbumsController {
+func CreateAlbumFactory() *controllers.CreateAlbumController {
 	repo := inmemorydb.NewAlbumRepository()
-	usecase := usecases.NewGetAlbumsUsecase(repo)
-	controller := controllers.NewGetAllAlbumsController(usecase)
+	usecase := usecases.NewCreateAlbumUsecase(repo)
+	controller := controllers.NewCreateAlbumController(usecase)
 	return controller
 }
