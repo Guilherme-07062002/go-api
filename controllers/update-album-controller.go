@@ -20,14 +20,14 @@ func NewUpdateAlbumController(usecase *usecases.UpdateAlbumUsecase) *UpdateAlbum
 
 func (controller *UpdateAlbumController) Handle(c *gin.Context) {
 	var body dtos.UpdateAlbumDto
-	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid body"})
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	id := c.Param("id")
 	result, err := controller.UpdateAlbumUsecase.Execute(id, body)
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Album not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 

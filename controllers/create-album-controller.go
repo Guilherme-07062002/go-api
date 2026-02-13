@@ -20,8 +20,8 @@ func NewCreateAlbumController(usecase *usecases.CreateAlbumUsecase) *CreateAlbum
 
 func (controller *CreateAlbumController) Handle(c *gin.Context) {
 	var body dtos.CreateAlbumDto
-	if err := c.BindJSON(&body); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid body"})
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	result := controller.CreateAlbumUsecase.Execute(body)

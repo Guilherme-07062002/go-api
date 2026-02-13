@@ -20,7 +20,7 @@ func NewGetAllAlbumsController(usecase *usecases.GetAlbumsUsecase) *GetAllAlbums
 func (controller *GetAllAlbumsController) Handle(c *gin.Context) {
 	albums, err := controller.GetAllUsecase.Execute()
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "internal server error"})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, albums)
