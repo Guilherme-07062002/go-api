@@ -1,10 +1,10 @@
 package inmemorydb
 
 import (
-	"errors"
 	"fmt"
 	"go-api/domain/dtos"
 	"go-api/domain/entities"
+	"go-api/domain/exceptions"
 )
 
 type AlbumRepositoryMemory struct {
@@ -27,7 +27,7 @@ func (r *AlbumRepositoryMemory) GetByID(id string) (*entities.Album, error) {
 			return &a, nil
 		}
 	}
-	return nil, errors.New("album not found")
+	return nil, exceptions.AlbumNotFound
 }
 
 func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album {
@@ -59,5 +59,5 @@ func (r *AlbumRepositoryMemory) Update(id string, data dtos.UpdateAlbumDto) (*en
 		}
 	}
 
-	return nil, errors.New("album not found")
+	return nil, exceptions.AlbumNotFound
 }

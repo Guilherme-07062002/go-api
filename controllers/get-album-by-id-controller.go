@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go-api/domain/exceptions"
 	"go-api/usecases"
 	"net/http"
 
@@ -21,7 +22,12 @@ func (controller *GetAlbumByIdController) Handle(c *gin.Context) {
 	id := c.Param("id")
 	album, err := controller.GetAlbumByIDUsecase.Execute(id)
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		if err == exceptions.AlbumNotFound {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+			return
+		}
+
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

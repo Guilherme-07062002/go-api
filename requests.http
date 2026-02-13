@@ -9,7 +9,7 @@ Content-Type: application/json
 {
     "title": "The New Modern Sound of Betty Carter",
     "artist": "Betty Carter",
-    "price": 49.99
+    "price": -1
 }
 
 ###
