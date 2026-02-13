@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	entities "go-api/domain/entities"
-	repositories "go-api/domain/repositories"
+	"go-api/domain/entities"
+	"go-api/domain/repositories"
 )
 
 type GetAlbumsUsecase struct {

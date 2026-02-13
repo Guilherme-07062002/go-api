@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go-api/domain/dtos"
-	entities "go-api/domain/entities"
+	"go-api/domain/entities"
 )
 
 type AlbumRepositoryMemory struct {
