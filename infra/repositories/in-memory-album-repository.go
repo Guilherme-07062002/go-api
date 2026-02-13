@@ -41,3 +41,23 @@ func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album
 	r.albums = append(r.albums, newAlbum)
 	return newAlbum
 }
+
+func (r *AlbumRepositoryMemory) Update(id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
+	for i, a := range r.albums {
+		if a.ID == id {
+			albumFound := &r.albums[i]
+			if data.Title != nil {
+				albumFound.Title = *data.Title
+			}
+			if data.Price != nil {
+				albumFound.Price = *data.Price
+			}
+			if data.Artist != nil {
+				albumFound.Artist = *data.Artist
+			}
+			return albumFound, nil
+		}
+	}
+
+	return nil, errors.New("album not found")
+}
