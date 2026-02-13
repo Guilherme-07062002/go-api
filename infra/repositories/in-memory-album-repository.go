@@ -21,13 +21,13 @@ func (r *AlbumRepositoryMemory) GetAll() (*[]entities.Album, error) {
 	return &r.albums, nil
 }
 
-func (r *AlbumRepositoryMemory) GetByID(id string) (entities.Album, error) {
+func (r *AlbumRepositoryMemory) GetByID(id string) (*entities.Album, error) {
 	for _, a := range r.albums {
 		if a.ID == id {
-			return a, nil
+			return &a, nil
 		}
 	}
-	return entities.Album{}, errors.New("album not found")
+	return nil, errors.New("album not found")
 }
 
 func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album {

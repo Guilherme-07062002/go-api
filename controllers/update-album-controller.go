@@ -28,6 +28,7 @@ func (controller *UpdateAlbumController) Handle(c *gin.Context) {
 	result, err := controller.UpdateAlbumUsecase.Execute(id, body)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Album not found"})
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, result)

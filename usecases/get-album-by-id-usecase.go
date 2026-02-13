@@ -15,6 +15,6 @@ func NewGetAlbumByIdUsecase(repo repositories.AlbumRepository) *GetAlbumByIDUsec
 	}
 }
 
-func (uc *GetAlbumByIDUsecase) Execute(id string) (entities.Album, error) {
+func (uc *GetAlbumByIDUsecase) Execute(id string) (*entities.Album, error) {
 	return uc.Repo.GetByID(id)
 }
