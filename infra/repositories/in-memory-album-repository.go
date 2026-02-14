@@ -1,10 +1,11 @@
 package inmemorydb
 
 import (
-	"fmt"
 	"go-api/domain/dtos"
 	"go-api/domain/entities"
 	"go-api/domain/exceptions"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 type AlbumRepositoryMemory struct {
@@ -32,8 +33,7 @@ func (r *AlbumRepositoryMemory) GetByID(id string) (*entities.Album, error) {
 
 func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album {
 	var newAlbum entities.Album
-	newId := fmt.Sprint(len(r.albums) + 1)
-	newAlbum.ID = newId
+	newAlbum.ID = uuid.NewV4().String()
 	newAlbum.Title = album.Title
 	newAlbum.Artist = album.Artist
 	newAlbum.Price = album.Price
