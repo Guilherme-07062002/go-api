@@ -2,4 +2,4 @@ package exceptions
 
 import "errors"
 
-var AlbumNotFound = errors.New("album not found")
+var AlbumNotFound = errors.New("Álbum não encontrado")

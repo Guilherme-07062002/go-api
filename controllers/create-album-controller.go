@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-api/domain/dtos"
+	"go-api/infra/utils"
 	"go-api/usecases"
 	"net/http"
 
@@ -28,9 +29,10 @@ func (controller *CreateAlbumController) Handle(c *gin.Context) {
 		return
 	}
 	if err := controller.validator.Struct(&body); err != nil {
+		mappedErrors := utils.TranslateError(err)
 		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{
-			"error":   "erro de validação",
-			"details": err.Error(),
+			"error":   "Erro de validação",
+			"details": mappedErrors,
 		})
 		return
 	}
