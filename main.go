@@ -1,38 +1,31 @@
 package main
 
 import (
-	"go-api/domain/dtos"
-	"go-api/infra/factories"
-	"go-api/infra/middlewares"
-	"go-api/infra/mocks"
-	inmemorydb "go-api/infra/repositories"
+	"fmt"
+	"go-api/infra/config"
+	"log"
+	"os"
 
-	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	router := gin.Default()
-	albums := mocks.GetAlbumsInMemory()
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Warning: .env file not found")
+	}
 
-	repo := inmemorydb.NewAlbumRepository(albums)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
-	getAllAlbumController := factories.GetAllAlbumFactory(repo)
-	router.GET("/albums", getAllAlbumController.Handle)
+	host := os.Getenv("HOST")
+	if host == "" {
+		host = "localhost"
+	}
 
-	getAlbumByIdController := factories.GetAlbumByIdFactory(repo)
-	router.GET("/albums/:id", getAlbumByIdController.Handle)
+	router := config.InitializeServer()
 
-	createAlbumController := factories.CreateAlbumFactory(repo)
-	router.POST("/albums",
-		middlewares.ValidateBody[dtos.CreateAlbumDto](),
-		createAlbumController.Handle,
-	)
-
-	updateAlbumController := factories.UpdateAlbumFactory(repo)
-	router.PUT("/albums/:id",
-		middlewares.ValidateBody[dtos.UpdateAlbumDto](),
-		updateAlbumController.Handle,
-	)
-
-	router.Run("localhost:8080")
+	router.Run(fmt.Sprintf("%s:%s", host, port))
 }
