@@ -3,7 +3,6 @@ package controllers
 import (
 	"go-api/domain/dtos"
 	"go-api/domain/exceptions"
-	"go-api/infra/utils"
 	"go-api/usecases"
 	"net/http"
 
@@ -24,22 +23,11 @@ func NewUpdateAlbumController(usecase *usecases.UpdateAlbumUsecase) *UpdateAlbum
 }
 
 func (controller *UpdateAlbumController) Handle(c *gin.Context) {
-	var body dtos.UpdateAlbumDto
-	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	if err := controller.validator.Struct(body); err != nil {
-		mappedErrors := utils.TranslateError(err)
-		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{
-			"error":   "Erro de validação",
-			"details": mappedErrors,
-		})
-		return
-	}
+	val, _ := c.Get("validatedBody")
+	dto := val.(dtos.UpdateAlbumDto)
 
 	id := c.Param("id")
-	result, err := controller.UpdateAlbumUsecase.Execute(id, body)
+	result, err := controller.UpdateAlbumUsecase.Execute(id, dto)
 	if err != nil {
 		if err == exceptions.AlbumNotFound {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})

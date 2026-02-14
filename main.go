@@ -1,7 +1,9 @@
 package main
 
 import (
+	"go-api/domain/dtos"
 	"go-api/infra/factories"
+	"go-api/infra/middlewares"
 	"go-api/infra/mocks"
 	inmemorydb "go-api/infra/repositories"
 
@@ -21,10 +23,16 @@ func main() {
 	router.GET("/albums/:id", getAlbumByIdController.Handle)
 
 	createAlbumController := factories.CreateAlbumFactory(repo)
-	router.POST("/albums", createAlbumController.Handle)
+	router.POST("/albums",
+		middlewares.ValidateBody[dtos.CreateAlbumDto](),
+		createAlbumController.Handle,
+	)
 
 	updateAlbumController := factories.UpdateAlbumFactory(repo)
-	router.PUT("/albums/:id", updateAlbumController.Handle)
+	router.PUT("/albums/:id",
+		middlewares.ValidateBody[dtos.UpdateAlbumDto](),
+		updateAlbumController.Handle,
+	)
 
 	router.Run("localhost:8080")
 }

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"go-api/domain/dtos"
-	"go-api/infra/utils"
 	"go-api/usecases"
 	"net/http"
 
@@ -23,19 +22,9 @@ func NewCreateAlbumController(usecase *usecases.CreateAlbumUsecase) *CreateAlbum
 }
 
 func (controller *CreateAlbumController) Handle(c *gin.Context) {
-	var body dtos.CreateAlbumDto
-	if err := c.ShouldBindJSON(&body); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	if err := controller.validator.Struct(&body); err != nil {
-		mappedErrors := utils.TranslateError(err)
-		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{
-			"error":   "Erro de validação",
-			"details": mappedErrors,
-		})
-		return
-	}
-	result := controller.CreateAlbumUsecase.Execute(body)
+	val, _ := c.Get("validatedBody")
+	dto := val.(dtos.CreateAlbumDto)
+
+	result := controller.CreateAlbumUsecase.Execute(dto)
 	c.IndentedJSON(http.StatusCreated, result)
 }
