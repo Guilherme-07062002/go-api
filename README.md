@@ -8,8 +8,15 @@ O intuito foi deixar funcionando a principio porém ilustrando como um software 
 
 ## Executando a API
 
-Para rodar a API no modo watch utilizando o 'air':
+Para executar esta API com Docker: 
 
 ```bash
-air
+docker-compose up -d
+```
+
+## 📚 Documentação Swagger
+
+Acesse a documentação interativa da API em:
+```
+http://localhost:8080/swagger/index.html
 ```

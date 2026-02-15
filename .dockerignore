@@ -1,0 +1,48 @@
+# Arquivos e diretórios Git
+.git
+.gitignore
+.gitattributes
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Diretórios temporários e de build
+tmp/
+*.tmp
+*.log
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos do editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentação
+README.md
+docs/
+*.md
+
+# Arquivos HTTP de teste
+requests.http
+*.http
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Binários compilados
+*.exe
+*.dll
+*.so
+*.dylib
+main
+go-api
