@@ -145,14 +145,17 @@ const docTemplate = `{
             ],
             "properties": {
                 "artist": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Coltran"
                 },
                 "price": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 56.99
                 },
                 "title": {
                     "type": "string",
-                    "minLength": 3
+                    "minLength": 3,
+                    "example": "Blue Train"
                 }
             }
         },
@@ -160,15 +163,18 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "artist": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Coltran"
                 },
                 "price": {
                     "type": "number",
-                    "minimum": 0
+                    "minimum": 0,
+                    "example": 56.99
                 },
                 "title": {
                     "type": "string",
-                    "minLength": 3
+                    "minLength": 3,
+                    "example": "Blue Train"
                 }
             }
         },

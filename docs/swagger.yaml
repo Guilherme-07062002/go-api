@@ -2,10 +2,13 @@ definitions:
   dtos.CreateAlbumDto:
     properties:
       artist:
+        example: John Coltran
         type: string
       price:
+        example: 56.99
         type: number
       title:
+        example: Blue Train
         minLength: 3
         type: string
     required:
@@ -16,11 +19,14 @@ definitions:
   dtos.UpdateAlbumDto:
     properties:
       artist:
+        example: John Coltran
         type: string
       price:
+        example: 56.99
         minimum: 0
         type: number
       title:
+        example: Blue Train
         minLength: 3
         type: string
     type: object
