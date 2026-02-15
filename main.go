@@ -10,6 +10,11 @@ import (
 // @title           Albums API
 // @version         1.0
 // @description     API para gerenciamento de álbums em Clean Architecture
+
+// @securityDefinitions.apikey BearerAuth
+// @in                         header
+// @name                       Authorization
+// @description                Digite: Bearer {token}
 func main() {
 	env := config.LoadEnv()
 

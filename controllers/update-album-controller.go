@@ -31,6 +31,7 @@ func NewUpdateAlbumController(usecase *usecases.UpdateAlbumUsecase) *UpdateAlbum
 // @Param        album  body      dtos.UpdateAlbumDto  true  "Informações do álbum que serão atualizadas"
 // @Success      200    {object}  entities.Album "Álbum atualizado com sucesso"
 // @Router       /albums/{id} [put]
+// @Security BearerAuth
 func (controller *UpdateAlbumController) Handle(c *gin.Context) {
 	val, _ := c.Get("validatedBody")
 	dto := val.(dtos.UpdateAlbumDto)

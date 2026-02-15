@@ -10,6 +10,8 @@ import (
 	"go-api/infra/middlewares"
 	"go-api/infra/mocks"
 	inmemorydb "go-api/infra/repositories"
+	"go-api/infra/security"
+
 	"go-api/usecases"
 
 	_ "go-api/docs"
@@ -18,6 +20,16 @@ import (
 	"github.com/google/wire"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+func provideJWTSecret() string {
+	env := LoadEnv()
+	return env.JwtSecret
+}
+
+var securitySet = wire.NewSet(
+	provideJWTSecret,
+	security.NewJwtService,
 )
 
 var albumRepositorySet = wire.NewSet(
@@ -45,10 +57,12 @@ func newServer(
 	createAlbumController *controllers.CreateAlbumController,
 	getAlbumByIdController *controllers.GetAlbumByIdController,
 	updateAlbumController *controllers.UpdateAlbumController,
+	tokenService security.TokenService,
 ) *gin.Engine {
 	router := gin.Default()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// router.Use(middlewares.AuthMiddleware(tokenService))
 
 	router.GET("/albums", getAllAlbumsController.Handle)
 	router.GET("/albums/:id", getAlbumByIdController.Handle)
@@ -69,6 +83,7 @@ func InitializeServer() *gin.Engine {
 		albumRepositorySet,
 		usecasesSet,
 		controllersSet,
+		securitySet,
 		newServer,
 	)
 	return nil

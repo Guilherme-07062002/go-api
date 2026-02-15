@@ -17,7 +17,12 @@ import (
 	"go-api/infra/middlewares"
 	"go-api/infra/mocks"
 	"go-api/infra/repositories"
+	"go-api/infra/security"
 	"go-api/usecases"
+)
+
+import (
+	_ "go-api/docs"
 )
 
 // Injectors from wire.go:
@@ -33,13 +38,23 @@ func InitializeServer() *gin.Engine {
 	getAlbumByIdController := controllers.NewGetAlbumByIDController(getAlbumByIDUsecase)
 	updateAlbumUsecase := usecases.NewUpdateAlbumUsecase(albumRepositoryMemory)
 	updateAlbumController := controllers.NewUpdateAlbumController(updateAlbumUsecase)
-	engine := newServer(getAllAlbumsController, createAlbumController, getAlbumByIdController, updateAlbumController)
+	string2 := provideJWTSecret()
+	tokenService := security.NewJwtService(string2)
+	engine := newServer(getAllAlbumsController, createAlbumController, getAlbumByIdController, updateAlbumController, tokenService)
 	return engine
 }
 
 // wire.go:
 
-// Provider sets for different components
+func provideJWTSecret() string {
+	env := LoadEnv()
+	return env.JwtSecret
+}
+
+var securitySet = wire.NewSet(
+	provideJWTSecret, security.NewJwtService,
+)
+
 var albumRepositorySet = wire.NewSet(inmemorydb.NewAlbumRepository, mocks.GetAlbumsInMemory, wire.Bind(new(repositories.AlbumRepository), new(*inmemorydb.AlbumRepositoryMemory)))
 
 var usecasesSet = wire.NewSet(usecases.NewGetAlbumsUsecase, usecases.NewCreateAlbumUsecase, usecases.NewGetAlbumByIdUsecase, usecases.NewUpdateAlbumUsecase)
@@ -51,6 +66,7 @@ func newServer(
 	createAlbumController *controllers.CreateAlbumController,
 	getAlbumByIdController *controllers.GetAlbumByIdController,
 	updateAlbumController *controllers.UpdateAlbumController,
+	tokenService security.TokenService,
 ) *gin.Engine {
 	router := gin.Default()
 

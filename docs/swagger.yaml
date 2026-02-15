@@ -60,6 +60,8 @@ paths:
             items:
               $ref: '#/definitions/entities.Album'
             type: array
+      security:
+      - BearerAuth: []
       summary: Lista os álbuns cadastrados
       tags:
       - Álbuns
@@ -76,6 +78,8 @@ paths:
           description: Álbum criado com sucesso
           schema:
             $ref: '#/definitions/entities.Album'
+      security:
+      - BearerAuth: []
       summary: Cria um novo álbum
       tags:
       - Álbuns
@@ -96,6 +100,8 @@ paths:
           description: Álbum encontrado
           schema:
             $ref: '#/definitions/entities.Album'
+      security:
+      - BearerAuth: []
       summary: Busca um álbum pelo seu ID
       tags:
       - Álbuns
@@ -121,7 +127,15 @@ paths:
           description: Álbum atualizado com sucesso
           schema:
             $ref: '#/definitions/entities.Album'
+      security:
+      - BearerAuth: []
       summary: Atualiza um álbum
       tags:
       - Álbuns
+securityDefinitions:
+  BearerAuth:
+    description: 'Digite: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

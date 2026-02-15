@@ -27,6 +27,7 @@ func NewCreateAlbumController(usecase *usecases.CreateAlbumUsecase) *CreateAlbum
 // @Param        album  body      dtos.CreateAlbumDto  true "Dados do álbum que será criado"
 // @Success      201    {object}  entities.Album "Álbum criado com sucesso"
 // @Router       /albums [post]
+// @Security BearerAuth
 func (controller *CreateAlbumController) Handle(c *gin.Context) {
 	val, _ := c.Get("validatedBody")
 	dto := val.(dtos.CreateAlbumDto)

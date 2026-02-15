@@ -24,6 +24,7 @@ func NewGetAllAlbumsController(usecase *usecases.GetAlbumsUsecase) *GetAllAlbums
 // @Produce      json
 // @Success      200  {array}  entities.Album "Lista de álbuns"
 // @Router       /albums [get]
+// @Security BearerAuth
 func (controller *GetAllAlbumsController) Handle(c *gin.Context) {
 	albums, err := controller.GetAllUsecase.Execute()
 	if err != nil {
