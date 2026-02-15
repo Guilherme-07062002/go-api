@@ -9,6 +9,8 @@ package config
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"go-api/controllers"
 	"go-api/domain/dtos"
 	"go-api/domain/repositories"
@@ -37,6 +39,7 @@ func InitializeServer() *gin.Engine {
 
 // wire.go:
 
+// Provider sets for different components
 var albumRepositorySet = wire.NewSet(inmemorydb.NewAlbumRepository, mocks.GetAlbumsInMemory, wire.Bind(new(repositories.AlbumRepository), new(*inmemorydb.AlbumRepositoryMemory)))
 
 var usecasesSet = wire.NewSet(usecases.NewGetAlbumsUsecase, usecases.NewCreateAlbumUsecase, usecases.NewGetAlbumByIdUsecase, usecases.NewUpdateAlbumUsecase)
@@ -50,6 +53,8 @@ func newServer(
 	updateAlbumController *controllers.UpdateAlbumController,
 ) *gin.Engine {
 	router := gin.Default()
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/albums", getAllAlbumsController.Handle)
 	router.GET("/albums/:id", getAlbumByIdController.Handle)

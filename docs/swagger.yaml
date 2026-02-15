@@ -1,0 +1,121 @@
+definitions:
+  dtos.CreateAlbumDto:
+    properties:
+      artist:
+        type: string
+      price:
+        type: number
+      title:
+        minLength: 3
+        type: string
+    required:
+    - artist
+    - price
+    - title
+    type: object
+  dtos.UpdateAlbumDto:
+    properties:
+      artist:
+        type: string
+      price:
+        minimum: 0
+        type: number
+      title:
+        minLength: 3
+        type: string
+    type: object
+  entities.Album:
+    properties:
+      artist:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API para gerenciamento de álbums em Clean Architecture
+  title: Albums API
+  version: "1.0"
+paths:
+  /albums:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de álbuns
+          schema:
+            items:
+              $ref: '#/definitions/entities.Album'
+            type: array
+      summary: Lista os álbuns cadastrados
+      tags:
+      - Álbuns
+    post:
+      parameters:
+      - description: Dados do álbum que será criado
+        in: body
+        name: album
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateAlbumDto'
+      responses:
+        "201":
+          description: Álbum criado com sucesso
+          schema:
+            $ref: '#/definitions/entities.Album'
+      summary: Cria um novo álbum
+      tags:
+      - Álbuns
+  /albums/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID do álbum que será buscado
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Álbum encontrado
+          schema:
+            $ref: '#/definitions/entities.Album'
+      summary: Busca um álbum pelo seu ID
+      tags:
+      - Álbuns
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID do álbum que será atualizado
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Informações do álbum que serão atualizadas
+        in: body
+        name: album
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateAlbumDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Álbum atualizado com sucesso
+          schema:
+            $ref: '#/definitions/entities.Album'
+      summary: Atualiza um álbum
+      tags:
+      - Álbuns
+swagger: "2.0"

@@ -1,0 +1,185 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API para gerenciamento de álbums em Clean Architecture",
+        "title": "Albums API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/albums": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Álbuns"
+                ],
+                "summary": "Lista os álbuns cadastrados",
+                "responses": {
+                    "200": {
+                        "description": "Lista de álbuns",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Album"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Álbuns"
+                ],
+                "summary": "Cria um novo álbum",
+                "parameters": [
+                    {
+                        "description": "Dados do álbum que será criado",
+                        "name": "album",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateAlbumDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Álbum criado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Album"
+                        }
+                    }
+                }
+            }
+        },
+        "/albums/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Álbuns"
+                ],
+                "summary": "Busca um álbum pelo seu ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do álbum que será buscado",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Álbum encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Album"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Álbuns"
+                ],
+                "summary": "Atualiza um álbum",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do álbum que será atualizado",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Informações do álbum que serão atualizadas",
+                        "name": "album",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UpdateAlbumDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Álbum atualizado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Album"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dtos.CreateAlbumDto": {
+            "type": "object",
+            "required": [
+                "artist",
+                "price",
+                "title"
+            ],
+            "properties": {
+                "artist": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3
+                }
+            }
+        },
+        "dtos.UpdateAlbumDto": {
+            "type": "object",
+            "properties": {
+                "artist": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "title": {
+                    "type": "string",
+                    "minLength": 3
+                }
+            }
+        },
+        "entities.Album": {
+            "type": "object",
+            "properties": {
+                "artist": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

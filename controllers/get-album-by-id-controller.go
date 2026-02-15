@@ -18,6 +18,14 @@ func NewGetAlbumByIDController(usecase *usecases.GetAlbumByIDUsecase) *GetAlbumB
 	}
 }
 
+// GetAlbumByID godoc
+// @Summary      Busca um álbum pelo seu ID
+// @Tags         Álbuns
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "ID do álbum que será buscado"
+// @Success      200  {object}  entities.Album "Álbum encontrado"
+// @Router       /albums/{id} [get]
 func (controller *GetAlbumByIdController) Handle(c *gin.Context) {
 	id := c.Param("id")
 	album, err := controller.GetAlbumByIDUsecase.Execute(id)

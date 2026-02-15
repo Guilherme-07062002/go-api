@@ -21,6 +21,12 @@ func NewCreateAlbumController(usecase *usecases.CreateAlbumUsecase) *CreateAlbum
 	}
 }
 
+// CreateAlbum godoc
+// @Summary      Cria um novo álbum
+// @Tags         Álbuns
+// @Param        album  body      dtos.CreateAlbumDto  true "Dados do álbum que será criado"
+// @Success      201    {object}  entities.Album "Álbum criado com sucesso"
+// @Router       /albums [post]
 func (controller *CreateAlbumController) Handle(c *gin.Context) {
 	val, _ := c.Get("validatedBody")
 	dto := val.(dtos.CreateAlbumDto)

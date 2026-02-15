@@ -22,6 +22,15 @@ func NewUpdateAlbumController(usecase *usecases.UpdateAlbumUsecase) *UpdateAlbum
 	}
 }
 
+// UpdateAlbum godoc
+// @Summary      Atualiza um álbum
+// @Tags         Álbuns
+// @Accept       json
+// @Produce      json
+// @Param        id     path      string             true  "ID do álbum que será atualizado"
+// @Param        album  body      dtos.UpdateAlbumDto  true  "Informações do álbum que serão atualizadas"
+// @Success      200    {object}  entities.Album "Álbum atualizado com sucesso"
+// @Router       /albums/{id} [put]
 func (controller *UpdateAlbumController) Handle(c *gin.Context) {
 	val, _ := c.Get("validatedBody")
 	dto := val.(dtos.UpdateAlbumDto)

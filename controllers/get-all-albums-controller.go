@@ -17,6 +17,13 @@ func NewGetAllAlbumsController(usecase *usecases.GetAlbumsUsecase) *GetAllAlbums
 	}
 }
 
+// GetAllAlbums godoc
+// @Summary      Lista os álbuns cadastrados
+// @Tags         Álbuns
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  entities.Album "Lista de álbuns"
+// @Router       /albums [get]
 func (controller *GetAllAlbumsController) Handle(c *gin.Context) {
 	albums, err := controller.GetAllUsecase.Execute()
 	if err != nil {

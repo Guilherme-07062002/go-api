@@ -12,8 +12,12 @@ import (
 	inmemorydb "go-api/infra/repositories"
 	"go-api/usecases"
 
+	_ "go-api/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var albumRepositorySet = wire.NewSet(
@@ -43,6 +47,8 @@ func newServer(
 	updateAlbumController *controllers.UpdateAlbumController,
 ) *gin.Engine {
 	router := gin.Default()
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/albums", getAllAlbumsController.Handle)
 	router.GET("/albums/:id", getAlbumByIdController.Handle)
