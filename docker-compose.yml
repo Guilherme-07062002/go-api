@@ -37,6 +37,9 @@ services:
       - DB_NAME=${POSTGRES_DB:-go_api_db}
     ports:
       - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/tmp
     restart: unless-stopped
     depends_on:
       postgres:

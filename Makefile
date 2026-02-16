@@ -37,6 +37,11 @@ dev: swag wire tidy
 	@echo "Starting application in dev mode..."
 	go run $(MAIN_PATH)
 
+# Roda a aplicação com hot reload usando Air
+dev-watch: swag wire tidy
+	@echo "Starting application with hot reload..."
+	air
+
 # Limpa binários e arquivos temporários
 clean:
 	@echo "Cleaning up..."
