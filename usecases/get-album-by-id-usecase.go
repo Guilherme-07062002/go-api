@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"context"
 	"go-api/domain/entities"
 	"go-api/domain/repositories"
 )
@@ -15,6 +16,6 @@ func NewGetAlbumByIdUsecase(repo repositories.AlbumRepository) *GetAlbumByIDUsec
 	}
 }
 
-func (uc *GetAlbumByIDUsecase) Execute(id string) (*entities.Album, error) {
-	return uc.Repo.GetByID(id)
+func (uc *GetAlbumByIDUsecase) Execute(ctx context.Context, id string) (*entities.Album, error) {
+	return uc.Repo.GetByID(ctx, id)
 }

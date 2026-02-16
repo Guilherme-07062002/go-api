@@ -1,7 +1,8 @@
 package usecases
 
 import (
-	"go-api/domain/dtos"
+	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/entities"
 	"go-api/domain/repositories"
 )
@@ -16,6 +17,6 @@ func NewCreateAlbumUsecase(repo repositories.AlbumRepository) *CreateAlbumUsecas
 	}
 }
 
-func (uc *CreateAlbumUsecase) Execute(data dtos.CreateAlbumDto) entities.Album {
-	return uc.Repo.Create(data)
+func (uc *CreateAlbumUsecase) Execute(ctx context.Context, data dtos.CreateAlbumDto) entities.Album {
+	return uc.Repo.Create(ctx, data)
 }

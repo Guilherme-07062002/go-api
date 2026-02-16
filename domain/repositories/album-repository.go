@@ -1,13 +1,14 @@
 package repositories
 
 import (
-	"go-api/domain/dtos"
+	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/entities"
 )
 
 type AlbumRepository interface {
-	GetByID(id string) (*entities.Album, error)
-	GetAll() (*[]entities.Album, error)
-	Create(album dtos.CreateAlbumDto) entities.Album
-	Update(id string, album dtos.UpdateAlbumDto) (*entities.Album, error)
+	GetByID(ctx context.Context, id string) (*entities.Album, error)
+	GetAll(ctx context.Context, page, limit int) (*[]entities.Album, int64, error)
+	Create(ctx context.Context, album dtos.CreateAlbumDto) entities.Album
+	Update(ctx context.Context, id string, album dtos.UpdateAlbumDto) (*entities.Album, error)
 }

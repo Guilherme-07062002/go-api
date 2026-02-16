@@ -29,7 +29,7 @@ func NewGetAlbumByIDController(usecase *usecases.GetAlbumByIDUsecase) *GetAlbumB
 // @Security BearerAuth
 func (controller *GetAlbumByIdController) Handle(c *gin.Context) {
 	id := c.Param("id")
-	album, err := controller.GetAlbumByIDUsecase.Execute(id)
+	album, err := controller.GetAlbumByIDUsecase.Execute(c.Request.Context(), id)
 	if err != nil {
 		if err == exceptions.AlbumNotFound {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})

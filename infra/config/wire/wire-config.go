@@ -4,7 +4,7 @@ package wire
 
 import (
 	"go-api/controllers"
-	"go-api/domain/dtos"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/repositories"
 	"go-api/infra/config/env"
 	"go-api/infra/config/postgres"

@@ -1,7 +1,8 @@
 package usecases
 
 import (
-	"go-api/domain/dtos"
+	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/entities"
 	"go-api/domain/repositories"
 )
@@ -16,6 +17,6 @@ func NewUpdateAlbumUsecase(repo repositories.AlbumRepository) *UpdateAlbumUsecas
 	}
 }
 
-func (uc *UpdateAlbumUsecase) Execute(id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
-	return uc.Repo.Update(id, data)
+func (uc *UpdateAlbumUsecase) Execute(ctx context.Context, id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
+	return uc.Repo.Update(ctx, id, data)
 }

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"go-api/domain/dtos"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/exceptions"
 	"go-api/usecases"
 	"net/http"
@@ -37,7 +37,7 @@ func (controller *UpdateAlbumController) Handle(c *gin.Context) {
 	dto := val.(dtos.UpdateAlbumDto)
 
 	id := c.Param("id")
-	result, err := controller.UpdateAlbumUsecase.Execute(id, dto)
+	result, err := controller.UpdateAlbumUsecase.Execute(c.Request.Context(), id, dto)
 	if err != nil {
 		if err == exceptions.AlbumNotFound {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"message": err.Error()})

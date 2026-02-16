@@ -1,7 +1,8 @@
 package memory
 
 import (
-	"go-api/domain/dtos"
+	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/entities"
 	"go-api/domain/exceptions"
 
@@ -18,11 +19,27 @@ func NewAlbumRepository(albums []entities.Album) *InMemoryAlbumRepository {
 	}
 }
 
-func (r *InMemoryAlbumRepository) GetAll() (*[]entities.Album, error) {
-	return &r.albums, nil
+func (r *InMemoryAlbumRepository) GetAll(ctx context.Context, page, limit int) (*[]entities.Album, int64, error) {
+	total := int64(len(r.albums))
+	offset := (page - 1) * limit
+
+	// Verifica se o offset está fora do range
+	if offset > len(r.albums) {
+		emptyResult := make([]entities.Album, 0)
+		return &emptyResult, total, nil
+	}
+
+	// Calcula o final da página
+	end := offset + limit
+	if end > len(r.albums) {
+		end = len(r.albums)
+	}
+
+	paginatedAlbums := r.albums[offset:end]
+	return &paginatedAlbums, total, nil
 }
 
-func (r *InMemoryAlbumRepository) GetByID(id string) (*entities.Album, error) {
+func (r *InMemoryAlbumRepository) GetByID(ctx context.Context, id string) (*entities.Album, error) {
 	for _, a := range r.albums {
 		if a.ID == id {
 			return &a, nil
@@ -31,7 +48,7 @@ func (r *InMemoryAlbumRepository) GetByID(id string) (*entities.Album, error) {
 	return nil, exceptions.AlbumNotFound
 }
 
-func (r *InMemoryAlbumRepository) Create(album dtos.CreateAlbumDto) entities.Album {
+func (r *InMemoryAlbumRepository) Create(ctx context.Context, album dtos.CreateAlbumDto) entities.Album {
 	var newAlbum entities.Album
 	newAlbum.ID = uuid.NewV4().String()
 	newAlbum.Title = album.Title
@@ -42,7 +59,7 @@ func (r *InMemoryAlbumRepository) Create(album dtos.CreateAlbumDto) entities.Alb
 	return newAlbum
 }
 
-func (r *InMemoryAlbumRepository) Update(id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
+func (r *InMemoryAlbumRepository) Update(ctx context.Context, id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
 	for i, a := range r.albums {
 		if a.ID == id {
 			albumFound := &r.albums[i]

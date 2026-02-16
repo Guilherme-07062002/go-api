@@ -12,7 +12,7 @@ import (
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	"go-api/controllers"
-	"go-api/domain/dtos"
+	"go-api/domain/dtos/album"
 	"go-api/domain/repositories"
 	"go-api/infra/config/env"
 	postgres2 "go-api/infra/config/postgres"

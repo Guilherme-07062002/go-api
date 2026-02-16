@@ -31,15 +31,31 @@ const docTemplate = `{
                 "tags": [
                     "Álbuns"
                 ],
-                "summary": "Lista os álbuns cadastrados",
+                "summary": "Lista os álbuns cadastrados com paginação",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Número da página",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Itens por página",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de álbuns",
+                        "description": "Lista paginada de álbuns",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entities.Album"
-                            }
+                            "$ref": "#/definitions/dtos.PaginatedResponse-entities_Album"
                         }
                     }
                 }
@@ -176,6 +192,29 @@ const docTemplate = `{
                     "type": "string",
                     "minLength": 3,
                     "example": "Blue Train"
+                }
+            }
+        },
+        "dtos.PaginatedResponse-entities_Album": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.Album"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
                 }
             }
         },

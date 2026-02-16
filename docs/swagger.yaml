@@ -16,6 +16,21 @@ definitions:
     - price
     - title
     type: object
+  dtos.PaginatedResponse-entities_Album:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.Album'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
   dtos.UpdateAlbumDto:
     properties:
       artist:
@@ -51,18 +66,30 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - default: 1
+        description: Número da página
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - default: 10
+        description: Itens por página
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: Lista de álbuns
+          description: Lista paginada de álbuns
           schema:
-            items:
-              $ref: '#/definitions/entities.Album'
-            type: array
+            $ref: '#/definitions/dtos.PaginatedResponse-entities_Album'
       security:
       - BearerAuth: []
-      summary: Lista os álbuns cadastrados
+      summary: Lista os álbuns cadastrados com paginação
       tags:
       - Álbuns
     post:

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"go-api/domain/dtos"
+	dtos "go-api/domain/dtos/album"
 	"go-api/usecases"
 	"net/http"
 
@@ -32,6 +32,6 @@ func (controller *CreateAlbumController) Handle(c *gin.Context) {
 	val, _ := c.Get("validatedBody")
 	dto := val.(dtos.CreateAlbumDto)
 
-	result := controller.CreateAlbumUsecase.Execute(dto)
+	result := controller.CreateAlbumUsecase.Execute(c.Request.Context(), dto)
 	c.IndentedJSON(http.StatusCreated, result)
 }

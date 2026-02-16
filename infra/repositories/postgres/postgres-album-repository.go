@@ -1,7 +1,8 @@
 package postgres
 
 import (
-	"go-api/domain/dtos"
+	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/entities"
 	"go-api/domain/exceptions"
 	postgresConfig "go-api/infra/config/postgres"
@@ -19,11 +20,20 @@ func NewPostgresRepository() *PostgresAlbumRepository {
 	return &PostgresAlbumRepository{DB: postgresConfig.DB}
 }
 
-func (r *PostgresAlbumRepository) GetAll() (*[]entities.Album, error) {
+func (r *PostgresAlbumRepository) GetAll(ctx context.Context, page, limit int) (*[]entities.Album, int64, error) {
 	var albumModels []models.Album
-	result := r.DB.Find(&albumModels)
+	var total int64
+
+	r.DB.WithContext(ctx).Model(&models.Album{}).Count(&total)
+
+	offset := (page - 1) * limit
+	result := r.DB.WithContext(ctx).
+		Limit(limit).
+		Offset(offset).
+		Find(&albumModels)
+
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, 0, result.Error
 	}
 
 	albums := make([]entities.Album, len(albumModels))
@@ -36,10 +46,10 @@ func (r *PostgresAlbumRepository) GetAll() (*[]entities.Album, error) {
 		}
 	}
 
-	return &albums, nil
+	return &albums, total, nil
 }
 
-func (r *PostgresAlbumRepository) GetByID(id string) (*entities.Album, error) {
+func (r *PostgresAlbumRepository) GetByID(ctx context.Context, id string) (*entities.Album, error) {
 	var albumModel models.Album
 	result := r.DB.First(&albumModel, "id = ?", id)
 	if result.Error != nil {
@@ -59,7 +69,7 @@ func (r *PostgresAlbumRepository) GetByID(id string) (*entities.Album, error) {
 	return album, nil
 }
 
-func (r *PostgresAlbumRepository) Create(data dtos.CreateAlbumDto) entities.Album {
+func (r *PostgresAlbumRepository) Create(ctx context.Context, data dtos.CreateAlbumDto) entities.Album {
 	albumModel := models.Album{
 		ID:     uuid.NewV4().String(),
 		Title:  data.Title,
@@ -77,7 +87,7 @@ func (r *PostgresAlbumRepository) Create(data dtos.CreateAlbumDto) entities.Albu
 	}
 }
 
-func (r *PostgresAlbumRepository) Update(id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
+func (r *PostgresAlbumRepository) Update(ctx context.Context, id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
 	var albumModel models.Album
 	result := r.DB.First(&albumModel, "id = ?", id)
 	if result.Error != nil {
