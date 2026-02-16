@@ -1,22 +1,49 @@
-# Clean Arch com Go
+# Go API - Clean Architecture
 
-Implementação de API simples utilizando Go e Gin e fazendo uso do padrão clean architecture para estrutura do projeto.
+Exemplo de API REST para gerenciamento de álbuns implementada com Clean Architecture.
 
-O projeto foi feito desde o principio com o intuito de evoluir, tudo começou com apenas um arquivo main.go e o router definindo as endpoints e regras de negócio em um único arquivo.
+## Stack
 
-O intuito foi deixar funcionando a principio porém ilustrando como um software pode evoluir, dessa forma após garantir que a api funcionava nesse único arquivo, foram-se introduzindo novos arquivos tornando a aplicação mais robusta e garantindo uma boa arquitetura.
+- **Go** 1.24.4 + **Gin** (HTTP framework)
+- **PostgreSQL** 16 + **GORM** (ORM)
+- **JWT** (autenticação)
+- **Swagger** (documentação)
+- **Wire** (injeção de dependências)
+- **Docker** + **Docker Compose**
 
-## Executando a API
+## Estrutura
 
-Para executar esta API com Docker: 
+```
+├── controllers/       # Handlers HTTP
+├── usecases/          # Lógica de negócio
+├── domain/            # Entidades, DTOs, interfaces
+├── infra/             # Implementações (DB, security, config)
+└── docs/              # Swagger docs (auto-gerado)
+```
 
+## Execução
+
+### Docker
 ```bash
 docker-compose up -d
 ```
 
-## 📚 Documentação Swagger
-
-Acesse a documentação interativa da API em:
+### Local
+```bash
+make dev        # Desenvolvimento
+make dev-watch  # Com hot reload (requer air)
+make test       # Testes
 ```
-http://localhost:8080/swagger/index.html
+
+## Documentação
+
+Swagger disponível em: `http://localhost:8080/swagger/index.html`
+
+## Comandos Make utilitários
+
+```bash
+make swag    # Gerar docs Swagger
+make wire    # Gerar DI container
+make tidy    # Limpar dependências
+make build   # Compilar binário
 ```
