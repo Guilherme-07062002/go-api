@@ -1,15 +1,17 @@
 //go:build wireinject
-// +build wireinject
 
-package config
+package wire
 
 import (
 	"go-api/controllers"
 	"go-api/domain/dtos"
 	"go-api/domain/repositories"
+	"go-api/infra/config/env"
+	"go-api/infra/config/postgres"
 	"go-api/infra/middlewares"
 	"go-api/infra/mocks"
-	inmemorydb "go-api/infra/repositories"
+	"go-api/infra/repositories/memory"
+	postgresRepository "go-api/infra/repositories/postgres"
 	"go-api/infra/security"
 
 	"go-api/usecases"
@@ -20,10 +22,11 @@ import (
 	"github.com/google/wire"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 func provideJWTSecret() string {
-	env := LoadEnv()
+	env := env.LoadEnv()
 	return env.JwtSecret
 }
 
@@ -33,9 +36,20 @@ var securitySet = wire.NewSet(
 )
 
 var albumRepositorySet = wire.NewSet(
-	inmemorydb.NewAlbumRepository,
+	memory.NewAlbumRepository,
 	mocks.GetAlbumsInMemory,
-	wire.Bind(new(repositories.AlbumRepository), new(*inmemorydb.AlbumRepositoryMemory)),
+	wire.Bind(new(repositories.AlbumRepository), new(*memory.InMemoryAlbumRepository)),
+)
+
+func provideDbInstance() *gorm.DB {
+	DB := postgres.DB
+	return DB
+}
+
+var postgresRepositorySet = wire.NewSet(
+	postgresRepository.NewPostgresRepository,
+	provideDbInstance,
+	wire.Bind(new(repositories.AlbumRepository), new(*postgresRepository.PostgresAlbumRepository)),
 )
 
 var usecasesSet = wire.NewSet(
@@ -80,7 +94,7 @@ func newServer(
 
 func InitializeServer() *gin.Engine {
 	wire.Build(
-		albumRepositorySet,
+		postgresRepositorySet,
 		usecasesSet,
 		controllersSet,
 		securitySet,

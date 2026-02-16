@@ -4,7 +4,7 @@
 //go:build !wireinject
 // +build !wireinject
 
-package config
+package wire
 
 import (
 	"github.com/gin-gonic/gin"
@@ -14,29 +14,32 @@ import (
 	"go-api/controllers"
 	"go-api/domain/dtos"
 	"go-api/domain/repositories"
+	"go-api/infra/config/env"
+	postgres2 "go-api/infra/config/postgres"
 	"go-api/infra/middlewares"
 	"go-api/infra/mocks"
-	"go-api/infra/repositories"
+	"go-api/infra/repositories/memory"
+	"go-api/infra/repositories/postgres"
 	"go-api/infra/security"
 	"go-api/usecases"
+	"gorm.io/gorm"
 )
 
 import (
 	_ "go-api/docs"
 )
 
-// Injectors from wire.go:
+// Injectors from wire-config.go:
 
 func InitializeServer() *gin.Engine {
-	v := mocks.GetAlbumsInMemory()
-	albumRepositoryMemory := inmemorydb.NewAlbumRepository(v)
-	getAlbumsUsecase := usecases.NewGetAlbumsUsecase(albumRepositoryMemory)
+	postgresAlbumRepository := postgres.NewPostgresRepository()
+	getAlbumsUsecase := usecases.NewGetAlbumsUsecase(postgresAlbumRepository)
 	getAllAlbumsController := controllers.NewGetAllAlbumsController(getAlbumsUsecase)
-	createAlbumUsecase := usecases.NewCreateAlbumUsecase(albumRepositoryMemory)
+	createAlbumUsecase := usecases.NewCreateAlbumUsecase(postgresAlbumRepository)
 	createAlbumController := controllers.NewCreateAlbumController(createAlbumUsecase)
-	getAlbumByIDUsecase := usecases.NewGetAlbumByIdUsecase(albumRepositoryMemory)
+	getAlbumByIDUsecase := usecases.NewGetAlbumByIdUsecase(postgresAlbumRepository)
 	getAlbumByIdController := controllers.NewGetAlbumByIDController(getAlbumByIDUsecase)
-	updateAlbumUsecase := usecases.NewUpdateAlbumUsecase(albumRepositoryMemory)
+	updateAlbumUsecase := usecases.NewUpdateAlbumUsecase(postgresAlbumRepository)
 	updateAlbumController := controllers.NewUpdateAlbumController(updateAlbumUsecase)
 	string2 := provideJWTSecret()
 	tokenService := security.NewJwtService(string2)
@@ -44,18 +47,25 @@ func InitializeServer() *gin.Engine {
 	return engine
 }
 
-// wire.go:
+// wire-config.go:
 
 func provideJWTSecret() string {
-	env := LoadEnv()
-	return env.JwtSecret
+	env2 := env.LoadEnv()
+	return env2.JwtSecret
 }
 
 var securitySet = wire.NewSet(
 	provideJWTSecret, security.NewJwtService,
 )
 
-var albumRepositorySet = wire.NewSet(inmemorydb.NewAlbumRepository, mocks.GetAlbumsInMemory, wire.Bind(new(repositories.AlbumRepository), new(*inmemorydb.AlbumRepositoryMemory)))
+var albumRepositorySet = wire.NewSet(memory.NewAlbumRepository, mocks.GetAlbumsInMemory, wire.Bind(new(repositories.AlbumRepository), new(*memory.InMemoryAlbumRepository)))
+
+func provideDbInstance() *gorm.DB {
+	DB := postgres2.DB
+	return DB
+}
+
+var postgresRepositorySet = wire.NewSet(postgres.NewPostgresRepository, provideDbInstance, wire.Bind(new(repositories.AlbumRepository), new(*postgres.PostgresAlbumRepository)))
 
 var usecasesSet = wire.NewSet(usecases.NewGetAlbumsUsecase, usecases.NewCreateAlbumUsecase, usecases.NewGetAlbumByIdUsecase, usecases.NewUpdateAlbumUsecase)
 

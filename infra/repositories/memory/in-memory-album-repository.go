@@ -1,4 +1,4 @@
-package inmemorydb
+package memory
 
 import (
 	"go-api/domain/dtos"
@@ -8,21 +8,21 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type AlbumRepositoryMemory struct {
+type InMemoryAlbumRepository struct {
 	albums []entities.Album
 }
 
-func NewAlbumRepository(albums []entities.Album) *AlbumRepositoryMemory {
-	return &AlbumRepositoryMemory{
+func NewAlbumRepository(albums []entities.Album) *InMemoryAlbumRepository {
+	return &InMemoryAlbumRepository{
 		albums: albums,
 	}
 }
 
-func (r *AlbumRepositoryMemory) GetAll() (*[]entities.Album, error) {
+func (r *InMemoryAlbumRepository) GetAll() (*[]entities.Album, error) {
 	return &r.albums, nil
 }
 
-func (r *AlbumRepositoryMemory) GetByID(id string) (*entities.Album, error) {
+func (r *InMemoryAlbumRepository) GetByID(id string) (*entities.Album, error) {
 	for _, a := range r.albums {
 		if a.ID == id {
 			return &a, nil
@@ -31,7 +31,7 @@ func (r *AlbumRepositoryMemory) GetByID(id string) (*entities.Album, error) {
 	return nil, exceptions.AlbumNotFound
 }
 
-func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album {
+func (r *InMemoryAlbumRepository) Create(album dtos.CreateAlbumDto) entities.Album {
 	var newAlbum entities.Album
 	newAlbum.ID = uuid.NewV4().String()
 	newAlbum.Title = album.Title
@@ -42,7 +42,7 @@ func (r *AlbumRepositoryMemory) Create(album dtos.CreateAlbumDto) entities.Album
 	return newAlbum
 }
 
-func (r *AlbumRepositoryMemory) Update(id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
+func (r *InMemoryAlbumRepository) Update(id string, data dtos.UpdateAlbumDto) (*entities.Album, error) {
 	for i, a := range r.albums {
 		if a.ID == id {
 			albumFound := &r.albums[i]
