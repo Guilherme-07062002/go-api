@@ -6,8 +6,9 @@ import (
 	"go-api/domain/entities"
 	"go-api/usecases"
 	"go-api/usecases/tests/mocks"
-	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAverageAlbumPricesUsecase_Execute(t *testing.T) {
@@ -53,18 +54,7 @@ func TestGetAverageAlbumPricesUsecase_Execute(t *testing.T) {
 
 			result := uc.Execute(context.Background())
 
-			// Comparar os valores dos ponteiros, não os endereços
-			if result.AveragePrice == nil && tt.expected.AveragePrice == nil {
-				return // ambos são nil, teste passou
-			}
-			if result.AveragePrice == nil || tt.expected.AveragePrice == nil {
-				t.Errorf("Executou %s: esperado %v, mas obteve %v", tt.name, tt.expected, result)
-				return
-			}
-			// Comparar os valores com pequena tolerância para ponto flutuante
-			if math.Abs(*result.AveragePrice-*tt.expected.AveragePrice) > 0.0001 {
-				t.Errorf("Executou %s: esperado %v, mas obteve %v", tt.name, *tt.expected.AveragePrice, *result.AveragePrice)
-			}
+			assert.Equal(t, tt.expected, result, "O DTO de retorno deve ser idêntico ao esperado")
 		})
 	}
 }
