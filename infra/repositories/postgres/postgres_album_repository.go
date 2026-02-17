@@ -49,6 +49,31 @@ func (r *PostgresAlbumRepository) GetAll(ctx context.Context, page, limit int) (
 	return &albums, total, nil
 }
 
+func (r *PostgresAlbumRepository) GetAllWithoutPagination(ctx context.Context) *[]entities.Album {
+	var albumModels []models.Album
+
+	err := r.DB.WithContext(ctx).Find(&albumModels).Error
+	if err != nil {
+		return nil
+	}
+
+	if len(albumModels) == 0 {
+		return &[]entities.Album{}
+	}
+
+	albums := make([]entities.Album, len(albumModels))
+	for i, model := range albumModels {
+		albums[i] = entities.Album{
+			ID:     model.ID,
+			Title:  model.Title,
+			Artist: model.Artist,
+			Price:  model.Price,
+		}
+	}
+
+	return &albums
+}
+
 func (r *PostgresAlbumRepository) GetByID(ctx context.Context, id string) (*entities.Album, error) {
 	var albumModel models.Album
 	result := r.DB.First(&albumModel, "id = ?", id)

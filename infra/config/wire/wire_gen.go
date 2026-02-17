@@ -29,7 +29,7 @@ import (
 	_ "go-api/docs"
 )
 
-// Injectors from wire-config.go:
+// Injectors from wire_config.go:
 
 func InitializeServer() *gin.Engine {
 	postgresAlbumRepository := postgres.NewPostgresRepository()
@@ -47,7 +47,7 @@ func InitializeServer() *gin.Engine {
 	return engine
 }
 
-// wire-config.go:
+// wire_config.go:
 
 func provideJWTSecret() string {
 	env2 := env.LoadEnv()
