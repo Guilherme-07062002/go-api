@@ -9,6 +9,7 @@ import (
 type AlbumRepository interface {
 	GetByID(ctx context.Context, id string) (*entities.Album, error)
 	GetAll(ctx context.Context, page, limit int) (*[]entities.Album, int64, error)
+	GetAllWithoutPagination(ctx context.Context) *[]entities.Album
 	Create(ctx context.Context, album dtos.CreateAlbumDto) entities.Album
 	Update(ctx context.Context, id string, album dtos.UpdateAlbumDto) (*entities.Album, error)
 }
