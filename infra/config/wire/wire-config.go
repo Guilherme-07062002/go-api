@@ -9,8 +9,8 @@ import (
 	"go-api/infra/config/env"
 	"go-api/infra/config/postgres"
 	"go-api/infra/middlewares"
-	"go-api/infra/mocks"
 	"go-api/infra/repositories/memory"
+	"go-api/infra/repositories/memory/mocks"
 	postgresRepository "go-api/infra/repositories/postgres"
 	"go-api/infra/security"
 
