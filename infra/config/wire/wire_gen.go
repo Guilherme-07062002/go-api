@@ -17,8 +17,6 @@ import (
 	"go-api/infra/config/env"
 	postgres2 "go-api/infra/config/postgres"
 	"go-api/infra/middlewares"
-	"go-api/infra/repositories/memory"
-	"go-api/infra/repositories/memory/mocks"
 	"go-api/infra/repositories/postgres"
 	"go-api/infra/security"
 	"go-api/usecases"
@@ -41,9 +39,11 @@ func InitializeServer() *gin.Engine {
 	getAlbumByIdController := controllers.NewGetAlbumByIDController(getAlbumByIDUsecase)
 	updateAlbumUsecase := usecases.NewUpdateAlbumUsecase(postgresAlbumRepository)
 	updateAlbumController := controllers.NewUpdateAlbumController(updateAlbumUsecase)
+	getAverageAlbumPricesUsecase := usecases.NewGetAverageAlbumPricesUsecase(postgresAlbumRepository)
+	getAverageAlbumPricesController := controllers.NewGetAverageAlbumsPriceController(getAverageAlbumPricesUsecase)
 	string2 := provideJWTSecret()
 	tokenService := security.NewJwtService(string2)
-	engine := newServer(getAllAlbumsController, createAlbumController, getAlbumByIdController, updateAlbumController, tokenService)
+	engine := newServer(getAllAlbumsController, createAlbumController, getAlbumByIdController, updateAlbumController, getAverageAlbumPricesController, tokenService)
 	return engine
 }
 
@@ -58,8 +58,6 @@ var securitySet = wire.NewSet(
 	provideJWTSecret, security.NewJwtService,
 )
 
-var albumRepositorySet = wire.NewSet(memory.NewAlbumRepository, mocks.GetAlbumsInMemory, wire.Bind(new(repositories.AlbumRepository), new(*memory.InMemoryAlbumRepository)))
-
 func provideDbInstance() *gorm.DB {
 	DB := postgres2.DB
 	return DB
@@ -67,15 +65,16 @@ func provideDbInstance() *gorm.DB {
 
 var postgresRepositorySet = wire.NewSet(postgres.NewPostgresRepository, provideDbInstance, wire.Bind(new(repositories.AlbumRepository), new(*postgres.PostgresAlbumRepository)))
 
-var usecasesSet = wire.NewSet(usecases.NewGetAlbumsUsecase, usecases.NewCreateAlbumUsecase, usecases.NewGetAlbumByIdUsecase, usecases.NewUpdateAlbumUsecase)
+var usecasesSet = wire.NewSet(usecases.NewGetAlbumsUsecase, usecases.NewCreateAlbumUsecase, usecases.NewGetAlbumByIdUsecase, usecases.NewUpdateAlbumUsecase, usecases.NewGetAverageAlbumPricesUsecase)
 
-var controllersSet = wire.NewSet(controllers.NewGetAllAlbumsController, controllers.NewCreateAlbumController, controllers.NewGetAlbumByIDController, controllers.NewUpdateAlbumController)
+var controllersSet = wire.NewSet(controllers.NewGetAllAlbumsController, controllers.NewCreateAlbumController, controllers.NewGetAlbumByIDController, controllers.NewUpdateAlbumController, controllers.NewGetAverageAlbumsPriceController)
 
 func newServer(
 	getAllAlbumsController *controllers.GetAllAlbumsController,
 	createAlbumController *controllers.CreateAlbumController,
 	getAlbumByIdController *controllers.GetAlbumByIdController,
 	updateAlbumController *controllers.UpdateAlbumController,
+	getAverageAlbumsPriceController *controllers.GetAverageAlbumPricesController,
 	tokenService security.TokenService,
 ) *gin.Engine {
 	router := gin.Default()
@@ -83,6 +82,7 @@ func newServer(
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.GET("/albums", getAllAlbumsController.Handle)
+	router.GET("/albums/average", getAverageAlbumsPriceController.Handle)
 	router.GET("/albums/:id", getAlbumByIdController.Handle)
 	router.POST("/albums", middlewares.ValidateBody[dtos.CreateAlbumDto](), createAlbumController.Handle)
 	router.PUT("/albums/:id", middlewares.ValidateBody[dtos.UpdateAlbumDto](), updateAlbumController.Handle)

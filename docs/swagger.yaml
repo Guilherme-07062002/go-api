@@ -16,6 +16,12 @@ definitions:
     - price
     - title
     type: object
+  dtos.GetAverageAlbunsPriceResponseDto:
+    properties:
+      averagePrice:
+        example: 57.9
+        type: number
+    type: object
   dtos.PaginatedResponse-entities_Album:
     properties:
       data:
@@ -157,6 +163,22 @@ paths:
       security:
       - BearerAuth: []
       summary: Atualiza um álbum
+      tags:
+      - Álbuns
+  /albums/average:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Valor da média de preços dos álbuns
+          schema:
+            $ref: '#/definitions/dtos.GetAverageAlbunsPriceResponseDto'
+      security:
+      - BearerAuth: []
+      summary: Retorna a média de preços dos álbuns cadastrados
       tags:
       - Álbuns
 securityDefinitions:

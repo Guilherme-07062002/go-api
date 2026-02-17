@@ -2,36 +2,42 @@ package usecases_test
 
 import (
 	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/entities"
 	"go-api/usecases"
 	"go-api/usecases/tests/mocks"
+	"math"
 	"testing"
 )
 
 func TestGetAverageAlbumPricesUsecase_Execute(t *testing.T) {
+	avg20 := 20.0
+	avg12_5 := 12.5
+	avg0 := 0.0
+
 	tests := []struct {
 		name     string
 		mockData []entities.Album
-		expected float64
+		expected dtos.GetAverageAlbunsPriceResponseDto
 	}{
 		{
 			name: "Média simples de três álbuns",
 			mockData: []entities.Album{
 				{Price: 10}, {Price: 20}, {Price: 30},
 			},
-			expected: 20.0,
+			expected: dtos.GetAverageAlbunsPriceResponseDto{AveragePrice: &avg20},
 		},
 		{
 			name: "Média com valores decimais",
 			mockData: []entities.Album{
 				{Price: 10}, {Price: 15},
 			},
-			expected: 12.5,
+			expected: dtos.GetAverageAlbunsPriceResponseDto{AveragePrice: &avg12_5},
 		},
 		{
 			name:     "Lista vazia deve retornar zero",
 			mockData: []entities.Album{},
-			expected: 0.0,
+			expected: dtos.GetAverageAlbunsPriceResponseDto{AveragePrice: &avg0},
 		},
 	}
 
@@ -47,8 +53,17 @@ func TestGetAverageAlbumPricesUsecase_Execute(t *testing.T) {
 
 			result := uc.Execute(context.Background())
 
-			if result != tt.expected {
+			// Comparar os valores dos ponteiros, não os endereços
+			if result.AveragePrice == nil && tt.expected.AveragePrice == nil {
+				return // ambos são nil, teste passou
+			}
+			if result.AveragePrice == nil || tt.expected.AveragePrice == nil {
 				t.Errorf("Executou %s: esperado %v, mas obteve %v", tt.name, tt.expected, result)
+				return
+			}
+			// Comparar os valores com pequena tolerância para ponto flutuante
+			if math.Abs(*result.AveragePrice-*tt.expected.AveragePrice) > 0.0001 {
+				t.Errorf("Executou %s: esperado %v, mas obteve %v", tt.name, *tt.expected.AveragePrice, *result.AveragePrice)
 			}
 		})
 	}

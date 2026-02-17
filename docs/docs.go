@@ -91,6 +91,33 @@ const docTemplate = `{
                 }
             }
         },
+        "/albums/average": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Álbuns"
+                ],
+                "summary": "Retorna a média de preços dos álbuns cadastrados",
+                "responses": {
+                    "200": {
+                        "description": "Valor da média de preços dos álbuns",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.GetAverageAlbunsPriceResponseDto"
+                        }
+                    }
+                }
+            }
+        },
         "/albums/{id}": {
             "get": {
                 "security": [
@@ -192,6 +219,15 @@ const docTemplate = `{
                     "type": "string",
                     "minLength": 3,
                     "example": "Blue Train"
+                }
+            }
+        },
+        "dtos.GetAverageAlbunsPriceResponseDto": {
+            "type": "object",
+            "properties": {
+                "averagePrice": {
+                    "type": "number",
+                    "example": 57.9
                 }
             }
         },

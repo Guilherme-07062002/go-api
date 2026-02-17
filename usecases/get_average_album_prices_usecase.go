@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	dtos "go-api/domain/dtos/album"
 	"go-api/domain/repositories"
 )
 
@@ -15,10 +16,11 @@ func NewGetAverageAlbumPricesUsecase(repo repositories.AlbumRepository) *GetAver
 	}
 }
 
-func (uc *GetAverageAlbumPricesUsecase) Execute(ctx context.Context) float64 {
+func (uc *GetAverageAlbumPricesUsecase) Execute(ctx context.Context) dtos.GetAverageAlbunsPriceResponseDto {
 	albumsPtr := uc.Repo.GetAllWithoutPagination(ctx)
 	if len(*albumsPtr) == 0 || albumsPtr == nil {
-		return 0
+		zero := float64(0)
+		return dtos.GetAverageAlbunsPriceResponseDto{AveragePrice: &zero}
 	}
 
 	albums := *albumsPtr
@@ -29,5 +31,8 @@ func (uc *GetAverageAlbumPricesUsecase) Execute(ctx context.Context) float64 {
 	}
 
 	average := float64(totalSum) / float64(len(albums))
-	return average
+	response := dtos.GetAverageAlbunsPriceResponseDto{
+		AveragePrice: &average,
+	}
+	return response
 }
